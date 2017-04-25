@@ -52,22 +52,6 @@ public class OCompanyModel {
 	public JSONObject page(int idx, int pageSize) {
 		JSONArray array = comp.page(idx, pageSize);
 		JSONObject object = new JSONObject();
-//		for (int i = 0; i < array.size(); i++) {
-//			JSONObject objects = (JSONObject) array.get(i);
-//			// 获取组织机构信息
-//			JSONArray organ = getOgnization(objects);
-//			if (organ == null) {
-//				continue;
-//			}
-//			// 获取人员信息
-//			JSONArray person = getPerson(objects);
-//			objects.put("personnel", person);
-//			if (person == null) {
-//				continue;
-//			}
-//			objects.put("organization", organ);
-//			arrays.add(objects);
-//		}
 		object.put("totalSize", (int) Math.ceil((double) comp.count() / pageSize));
 		object.put("currentPage", idx);
 		object.put("pageSize", pageSize);

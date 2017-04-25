@@ -1,7 +1,5 @@
 package interfaceApplication;
 
-import org.json.simple.JSONObject;
-
 import esayhelper.JSONHelper;
 import esayhelper.jGrapeFW_Message;
 import rpc.execRequest;
@@ -9,13 +7,9 @@ import rpc.execRequest;
 public class Ognization {
 	// 新增组织机构信息
 	public String OrganAdd(String Info) {
-		JSONObject object = JSONHelper.string2json(Info);
-		if (!object.containsKey("ownid")) {
-			return resultmessage(1, "");
-		}
 		String info = execRequest._run("GrapeUser/roles/RoleInsert/" + Info, null).toString();
-		int code = (int) JSONHelper.string2json(info).get("errorcode");
-		return resultmessage(code, "组织机构新增成功");
+		long code = (long) JSONHelper.string2json(info).get("errorcode");
+		return resultmessage(Integer.parseInt(String.valueOf(code)), "组织机构新增成功");
 	}
 
 	// 删除组织机构信息
@@ -48,7 +42,7 @@ public class Ognization {
 	}
 
 	// 修改组织机构信息
-	public String OCompUpdate(String id, String info) {
+	public String OrganUpdate(String id, String info) {
 		String msg = execRequest._run("", null).toString();
 		int code = (int) JSONHelper.string2json(msg).get("errorcode");
 		return resultmessage(code, "组织机构修改成功");
@@ -59,9 +53,6 @@ public class Ognization {
 		switch (num) {
 		case 0:
 			msg = message;
-			break;
-		case 1:
-			msg = "新增失败，未设置ownid";
 			break;
 
 		default:
