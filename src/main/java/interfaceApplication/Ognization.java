@@ -15,8 +15,8 @@ public class Ognization {
 	// 删除组织机构信息
 	public String OrganDelete(String _id) {
 		String info = execRequest._run("GrapeUser/roles/RoleDelete/" + _id, null).toString();
-		int code = (int) JSONHelper.string2json(info).get("errorcode");
-		return resultmessage(code, "组织机构删除成功");
+		long code = (long) JSONHelper.string2json(info).get("errorcode");
+		return resultmessage(Integer.parseInt(String.valueOf(code)), "组织机构删除成功");
 	}
 
 	// 批量删除组织机构信息
