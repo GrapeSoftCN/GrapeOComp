@@ -13,43 +13,43 @@ public class personal {
 		if (!object.containsKey("ownid")) {
 			return resultmessage(1, "");
 		}
-		String info = execRequest._run("GrapeUser/user/UserRegister/" + Info, null).toString();
-		int code = (int) JSONHelper.string2json(info).get("errorcode");
-		return resultmessage(code, "人员信息新增成功");
+		String info = execRequest._run("GrapeUser/user/AddLeader/" + Info, null).toString();
+		long code = (long) JSONHelper.string2json(info).get("errorcode");
+		return resultmessage(Integer.parseInt(String.valueOf(code)), "人员信息新增成功");
 	}
 
 	// 删除人员信息
-	public String OrganDelete(String _id) {
+	public String PersonDelete(String _id) {
 		String info = execRequest._run("GrapeUser/user/userDelete/" + _id, null).toString();
-		int code = (int) JSONHelper.string2json(info).get("errorcode");
-		return resultmessage(code, "人员信息删除成功");
+		long code = (long) JSONHelper.string2json(info).get("errorcode");
+		return resultmessage(Integer.parseInt(String.valueOf(code)), "人员信息删除成功");
 	}
 
 	// 批量删除人员信息
-	public String OrganBatchDelete(String ids) {
+	public String PersonBatchDelete(String ids) {
 		String info = execRequest._run("GrapeUser/user/userBatchDelete/" + ids, null).toString();
-		int code = (int) JSONHelper.string2json(info).get("errorcode");
-		return resultmessage(code, "人员信息批量删除成功");
+		long code = (long) JSONHelper.string2json(info).get("errorcode");
+		return resultmessage(Integer.parseInt(String.valueOf(code)), "人员信息批量删除成功");
 	}
 
-	// 分页(需绑定ownid)
-	public String OrganPage(int ids, int pageSize, String ownid) {
-		String info = execRequest._run("GrapeUser/roles/Page/int:" + ids + "/int:" + pageSize + "/s:" + ownid, null)
+	// 分页
+	public String PersonPage(int ids, int pageSize) {
+		String info = execRequest._run("GrapeUser/user/UserPage/int:" + ids + "/int:" + pageSize, null)
 				.toString();
 		return info;
 	}
 
 	// 按条件分页（条件格式 [k:v]）
-	public String OrganPageBy(int ids, int pageSize, String json, String ownid) {
+	public String PersonPageBy(int ids, int pageSize, String json) {
 		String info = execRequest
-				._run("GrapeUser/roles/PageBy/int:" + ids + "/int:" + pageSize + "/s:" + json + "/s:" + ownid, null)
+				._run("GrapeUser/user/UserPageBy/int:" + ids + "/int:" + pageSize + "/s:" + json, null)
 				.toString();
 		return info;
 	}
 
 	// 修改人员信息
-	public String OCompUpdate(String id, String info) {
-		String msg = execRequest._run("", null).toString();
+	public String PersonUpdate(String id, String info) {
+		String msg = execRequest._run("GrapeUser/user/UserEdit/s:"+id+"/s:"+info, null).toString();
 		int code = (int) JSONHelper.string2json(msg).get("errorcode");
 		return resultmessage(code, "人员信息修改成功");
 	}
@@ -60,10 +60,6 @@ public class personal {
 		case 0:
 			msg = message;
 			break;
-		case 1:
-			msg = "新增失败，未设置ownid";
-			break;
-
 		default:
 			msg = "其它异常";
 			break;
