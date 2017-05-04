@@ -5,15 +5,14 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import esayhelper.DBHelper;
-import esayhelper.JSONHelper;
 import esayhelper.formHelper;
 import esayhelper.jGrapeFW_Message;
 import esayhelper.formHelper.formdef;
-import rpc.execRequest;
 
 public class OCompanyModel {
 	private static DBHelper comp;
 	private static formHelper form;
+	private JSONObject _obj = new JSONObject();
 
 	static {
 		comp = new DBHelper("mongodb", "OperateComp");
@@ -24,13 +23,6 @@ public class OCompanyModel {
 		form.putRule("companyName", formdef.notNull);
 	}
 
-	// public String addOC(JSONObject object) {
-	// if (!form.checkRule(object)) {
-	// return resultMessage(1, "");
-	// }
-	// String info = comp.data(object).insertOnce().toString();
-	// return find(info).toString();
-	// }
 	/**
 	 * 修改运行单位信息
 	 * 
@@ -44,7 +36,8 @@ public class OCompanyModel {
 		if (object.containsKey("ownid")) {
 			object.remove("ownid");
 		}
-		code = comp.eq("_id", new ObjectId(OCID)).data(object).update() != null ? 0 : 99;
+		code = comp.eq("_id", new ObjectId(OCID)).data(object).update() != null
+				? 0 : 99;
 		return code;
 	}
 
@@ -52,7 +45,8 @@ public class OCompanyModel {
 	public JSONObject page(int idx, int pageSize) {
 		JSONArray array = comp.page(idx, pageSize);
 		JSONObject object = new JSONObject();
-		object.put("totalSize", (int) Math.ceil((double) comp.count() / pageSize));
+		object.put("totalSize",
+				(int) Math.ceil((double) comp.count() / pageSize));
 		object.put("currentPage", idx);
 		object.put("pageSize", pageSize);
 		object.put("data", array);
@@ -69,35 +63,22 @@ public class OCompanyModel {
 		}
 		JSONArray array = comp.page(idx, pageSize);
 		JSONObject _obj = new JSONObject();
-		_obj.put("totalSize", (int) Math.ceil((double) comp.count() / pageSize));
+		_obj.put("totalSize",
+				(int) Math.ceil((double) comp.count() / pageSize));
 		_obj.put("currentPage", idx);
 		_obj.put("pageSize", pageSize);
 		_obj.put("data", array);
 		return _obj;
 	}
 
-	/**
-	 * 获取人员信息
-	 * 
-	 * @param objects
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public JSONArray getPerson(JSONObject objects) {
-		JSONArray msg = null;
-		JSONObject oJsonObject = new JSONObject();
-		oJsonObject.put("ownid", objects.get("ownid").toString());
-		String orString = execRequest._run("GrapeUser/user/UserSearch/s:" + oJsonObject.toString(), null).toString();
-		if (orString != null) {
-			String message = JSONHelper.string2json(orString).get("message").toString();
-			String records = JSONHelper.string2json(message).get("records").toString();
-			msg = JSONHelper.string2array(records);
-		}
-		return msg;
-	}
-
 	public JSONObject find(String vid) {
 		return comp.eq("_id", new ObjectId(vid)).find();
+	}
+
+	@SuppressWarnings("unchecked")
+	public String resultMessage(JSONObject object) {
+		_obj.put("records", object);
+		return resultMessage(0, _obj.toString());
 	}
 
 	public String resultMessage(int num, String message) {
@@ -108,6 +89,9 @@ public class OCompanyModel {
 			break;
 		case 1:
 			msg = "必填项没有填";
+			break;
+		case 2:
+			msg = "没有修改数据权限，请联系管理员进行权限调整";
 			break;
 		default:
 			msg = "其它异常";
