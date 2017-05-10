@@ -2,9 +2,9 @@ package interfaceApplication;
 
 import org.json.simple.JSONObject;
 
+import apps.appsProxy;
 import esayhelper.JSONHelper;
 import esayhelper.jGrapeFW_Message;
-import rpc.execRequest;
 
 public class personal {
 	// 新增人员信息
@@ -13,45 +13,57 @@ public class personal {
 		if (!object.containsKey("ownid")) {
 			return resultmessage(1, "");
 		}
-		String info = execRequest._run("GrapeUser/user/AddLeader/" + Info, null).toString();
+		String info = appsProxy.proxyCall("123.57.214.226:801",
+				"16/user/AddLeader/" + Info, null, "").toString();
 		long code = (long) JSONHelper.string2json(info).get("errorcode");
-		return resultmessage(Integer.parseInt(String.valueOf(code)), "人员信息新增成功");
+		return resultmessage(Integer.parseInt(String.valueOf(code)),
+				"人员信息新增成功");
 	}
 
 	// 删除人员信息
 	public String PersonDelete(String _id) {
-		String info = execRequest._run("GrapeUser/user/userDelete/" + _id, null).toString();
+		String info = appsProxy.proxyCall("123.57.214.226:801",
+				"16/user/userDelete/" + _id, null, "").toString();
 		long code = (long) JSONHelper.string2json(info).get("errorcode");
-		return resultmessage(Integer.parseInt(String.valueOf(code)), "人员信息删除成功");
+		return resultmessage(Integer.parseInt(String.valueOf(code)),
+				"人员信息删除成功");
 	}
 
 	// 批量删除人员信息
 	public String PersonBatchDelete(String ids) {
-		String info = execRequest._run("GrapeUser/user/userBatchDelete/" + ids, null).toString();
+		String info = appsProxy.proxyCall("123.57.214.226:801",
+				"16/user/userBatchDelete/" + ids, null, "").toString();
 		long code = (long) JSONHelper.string2json(info).get("errorcode");
-		return resultmessage(Integer.parseInt(String.valueOf(code)), "人员信息批量删除成功");
+		return resultmessage(Integer.parseInt(String.valueOf(code)),
+				"人员信息批量删除成功");
 	}
 
 	// 分页
 	public String PersonPage(int ids, int pageSize) {
-		String info = execRequest._run("GrapeUser/user/UserPage/int:" + ids + "/int:" + pageSize, null)
+		String info = appsProxy.proxyCall("123.57.214.226:801",
+				"16/user/UserPage/int:" + ids + "/int:" + pageSize, null, "")
 				.toString();
 		return info;
 	}
 
 	// 按条件分页（条件格式 [k:v]）
 	public String PersonPageBy(int ids, int pageSize, String json) {
-		String info = execRequest
-				._run("GrapeUser/user/UserPageBy/int:" + ids + "/int:" + pageSize + "/s:" + json, null)
+		String info = appsProxy
+				.proxyCall("123.57.214.226:801", "16/user/UserPageBy/int:" + ids
+						+ "/int:" + pageSize + "/s:" + json, null, "")
 				.toString();
 		return info;
 	}
 
 	// 修改人员信息
 	public String PersonUpdate(String id, String info) {
-		String msg = execRequest._run("GrapeUser/user/UserEdit/s:"+id+"/s:"+info, null).toString();
-		int code = (int) JSONHelper.string2json(msg).get("errorcode");
-		return resultmessage(code, "人员信息修改成功");
+		String msg = appsProxy
+				.proxyCall("123.57.214.226:801",
+						"16/user/UserEdit/s:" + id + "/s:" + info, null, "")
+				.toString();
+		long code = (long) JSONHelper.string2json(msg).get("errorcode");
+		return resultmessage(Integer.parseInt(String.valueOf(code)),
+				"人员信息修改成功");
 	}
 
 	private String resultmessage(int num, String message) {

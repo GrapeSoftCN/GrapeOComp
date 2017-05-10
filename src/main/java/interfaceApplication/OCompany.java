@@ -2,7 +2,6 @@ package interfaceApplication;
 
 import esayhelper.JSONHelper;
 import model.OCompanyModel;
-import rpc.execRequest;
 
 public class OCompany {
 	private OCompanyModel model = new OCompanyModel();
