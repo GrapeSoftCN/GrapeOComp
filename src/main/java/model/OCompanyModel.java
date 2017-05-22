@@ -4,6 +4,8 @@ import org.bson.types.ObjectId;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import apps.appsProxy;
+import database.db;
 import esayhelper.DBHelper;
 import esayhelper.formHelper;
 import esayhelper.jGrapeFW_Message;
@@ -15,7 +17,8 @@ public class OCompanyModel {
 	private JSONObject _obj = new JSONObject();
 
 	static {
-		comp = new DBHelper("mongodb", "OperateComp");
+		comp = new DBHelper(appsProxy.configValue().get("db").toString(),
+				"OperateComp");
 		form = comp.getChecker();
 	}
 
@@ -23,6 +26,9 @@ public class OCompanyModel {
 		form.putRule("companyName", formdef.notNull);
 	}
 
+	private db bind(){
+		return comp.bind(String.valueOf(appsProxy.appid()));
+	}
 	/**
 	 * 修改运行单位信息
 	 * 
@@ -36,17 +42,17 @@ public class OCompanyModel {
 		if (object.containsKey("ownid")) {
 			object.remove("ownid");
 		}
-		code = comp.eq("_id", new ObjectId(OCID)).data(object).update() != null
+		code = bind().eq("_id", new ObjectId(OCID)).data(object).update() != null
 				? 0 : 99;
 		return code;
 	}
 
 	@SuppressWarnings("unchecked")
 	public JSONObject page(int idx, int pageSize) {
-		JSONArray array = comp.page(idx, pageSize);
+		JSONArray array = bind().page(idx, pageSize);
 		JSONObject object = new JSONObject();
 		object.put("totalSize",
-				(int) Math.ceil((double) comp.count() / pageSize));
+				(int) Math.ceil((double) bind().count() / pageSize));
 		object.put("currentPage", idx);
 		object.put("pageSize", pageSize);
 		object.put("data", array);
@@ -57,14 +63,14 @@ public class OCompanyModel {
 	public JSONObject page(int idx, int pageSize, JSONObject object) {
 		for (Object object2 : object.keySet()) {
 			if (object.containsKey("_id")) {
-				comp.eq("_id", new ObjectId(object.get("_id").toString()));
+				bind().eq("_id", new ObjectId(object.get("_id").toString()));
 			}
-			comp.eq(object2.toString(), object.get(object2.toString()));
+			bind().eq(object2.toString(), object.get(object2.toString()));
 		}
-		JSONArray array = comp.page(idx, pageSize);
+		JSONArray array = bind().dirty().page(idx, pageSize);
 		JSONObject _obj = new JSONObject();
 		_obj.put("totalSize",
-				(int) Math.ceil((double) comp.count() / pageSize));
+				(int) Math.ceil((double) bind().count() / pageSize));
 		_obj.put("currentPage", idx);
 		_obj.put("pageSize", pageSize);
 		_obj.put("data", array);
@@ -72,7 +78,7 @@ public class OCompanyModel {
 	}
 
 	public JSONObject find(String vid) {
-		return comp.eq("_id", new ObjectId(vid)).find();
+		return bind().eq("_id", new ObjectId(vid)).find();
 	}
 
 	@SuppressWarnings("unchecked")
