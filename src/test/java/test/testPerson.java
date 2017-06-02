@@ -1,9 +1,16 @@
 package test;
 
-import interfaceApplication.personal;
+import httpServer.booter;
 
 public class testPerson {
 	public static void main(String[] args) {
-		System.out.println(new personal().PersonPageBy(1, 5, "{\"ownid\":0}"));
+		booter booter = new booter();
+		System.out.println("GrapeTest!");
+		try {
+			System.setProperty("AppName", "GrapeTest");
+			booter.start(6004);
+		} catch (Exception e) {
+
+		}
 	}
 }
