@@ -3,9 +3,9 @@ package interfaceApplication;
 import java.io.FileInputStream;
 import java.util.Properties;
 
+import JGrapeSystem.jGrapeFW_Message;
 import apps.appsProxy;
-import esayhelper.JSONHelper;
-import esayhelper.jGrapeFW_Message;
+import json.JSONHelper;
 import nlogger.nlogger;
 
 public class Ognization {
