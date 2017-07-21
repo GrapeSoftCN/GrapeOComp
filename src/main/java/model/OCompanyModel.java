@@ -13,16 +13,13 @@ import database.db;
 import nlogger.nlogger;
 
 public class OCompanyModel {
-	private static DBHelper comp;
-	private static formHelper form;
+	private DBHelper comp;
+	private formHelper form;
 	private JSONObject _obj = new JSONObject();
 
-	static {
+	public OCompanyModel() {
 		comp = new DBHelper(appsProxy.configValue().get("db").toString(), "OperateComp");
 		form = comp.getChecker();
-	}
-
-	public OCompanyModel() {
 		form.putRule("companyName", formdef.notNull);
 	}
 
