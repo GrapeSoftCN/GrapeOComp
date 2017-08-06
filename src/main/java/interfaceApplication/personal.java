@@ -1,8 +1,5 @@
 package interfaceApplication;
 
-import java.io.FileInputStream;
-import java.util.Properties;
-
 import org.json.simple.JSONObject;
 
 import JGrapeSystem.jGrapeFW_Message;
@@ -18,7 +15,7 @@ public class personal {
 		if (object != null) {
 			try {
 				String info = appsProxy
-						.proxyCall(callhost(), appsProxy.appid() + "/16/user/AddLeader/" + Info, null, "").toString();
+						.proxyCall("/GrapeUser/user/AddLeader/" + Info, null, "").toString();
 				long codes = (long) JSONHelper.string2json(info).get("errorcode");
 				code = Integer.parseInt(String.valueOf(codes));
 			} catch (Exception e) {
@@ -33,7 +30,7 @@ public class personal {
 	public String PersonDelete(String _id) {
 		int code = 99;
 		try {
-			String info = appsProxy.proxyCall(callhost(), appsProxy.appid() + "/16/user/UserDelect/" + _id, null, "")
+			String info = appsProxy.proxyCall("/GrapeUser/user/UserDelect/" + _id)
 					.toString();
 			long codes = (long) JSONHelper.string2json(info).get("errorcode");
 			code = Integer.parseInt(String.valueOf(codes));
@@ -49,7 +46,7 @@ public class personal {
 		int code = 99;
 		try {
 			String info = appsProxy
-					.proxyCall(callhost(), appsProxy.appid() + "/16/user/UserBatchDelect/" + ids, null, "").toString();
+					.proxyCall("/GrapeUser/user/UserBatchDelect/" + ids, null, "").toString();
 			long codes = (long) JSONHelper.string2json(info).get("errorcode");
 			code = Integer.parseInt(String.valueOf(codes));
 		} catch (Exception e) {
@@ -63,8 +60,7 @@ public class personal {
 	public String PersonPage(int ids, int pageSize) {
 		String info = null;
 		try {
-			info = appsProxy.proxyCall(callhost(),
-					appsProxy.appid() + "/16/user/UserPage/int:" + ids + "/int:" + pageSize, null, "").toString();
+			info = appsProxy.proxyCall("/GrapeUser/user/UserPage/int:" + ids + "/int:" + pageSize).toString();
 		} catch (Exception e) {
 			nlogger.logout(e);
 			info = null;
@@ -77,9 +73,7 @@ public class personal {
 		String info = null;
 		if (JSONHelper.string2json(json) != null) {
 			try {
-				info = appsProxy.proxyCall(callhost(),
-						appsProxy.appid() + "/16/user/UserPageBy/int:" + ids + "/int:" + pageSize + "/s:" + json, null,
-						"").toString();
+				info = appsProxy.proxyCall("/GrapeUser/user/UserPageBy/int:" + ids + "/int:" + pageSize + "/s:" + json).toString();
 			} catch (Exception e) {
 				nlogger.logout(e);
 				info = null;
@@ -94,8 +88,7 @@ public class personal {
 		if (JSONHelper.string2json(info) != null) {
 			try {
 				String msg = appsProxy
-						.proxyCall("123.57.214.226:801",
-								String.valueOf(appsProxy.appid()) + "/16/user/UserEdit/s:" + id + "/s:" + info, null, "")
+						.proxyCall("/GrapeUser/user/UserEdit/s:" + id + "/s:" + info, null, "")
 						.toString();
 				long codes = (long) JSONHelper.string2json(msg).get("errorcode");
 				code = Integer.parseInt(String.valueOf(codes));
@@ -105,22 +98,6 @@ public class personal {
 			}
 		}
 		return resultmessage(code, "人员信息修改成功");
-	}
-
-	private String callhost() {
-		return getAppIp("host").split("/")[0];
-	}
-
-	private String getAppIp(String key) {
-		String value = "";
-		try {
-			Properties pro = new Properties();
-			pro.load(new FileInputStream("URLConfig.properties"));
-			value = pro.getProperty(key);
-		} catch (Exception e) {
-			value = "";
-		}
-		return value;
 	}
 
 	private String resultmessage(int num, String message) {

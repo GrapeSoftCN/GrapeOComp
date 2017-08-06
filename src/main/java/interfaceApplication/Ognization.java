@@ -11,7 +11,7 @@ import nlogger.nlogger;
 public class Ognization {
 	// 新增组织机构信息,返回新增的组织结构信息
 	public String OrganAdd(String Info) {
-		String info = appsProxy.proxyCall(callhost(), appsProxy.appid() + "/16/roles/RoleInsert/" + Info, null, "")
+		String info = appsProxy.proxyCall("/GrapeUser/roles/RoleInsert/" + Info)
 				.toString();
 		long code = (long) JSONHelper.string2json(info).get("errorcode");
 		return resultmessage(Integer.parseInt(String.valueOf(code)), "新增组织机构成功");
@@ -19,7 +19,7 @@ public class Ognization {
 
 	// 删除组织机构信息
 	public String OrganDelete(String _id) {
-		String info = appsProxy.proxyCall(callhost(), appsProxy.appid() + "/16/roles/RoleDelete/" + _id, null, "")
+		String info = appsProxy.proxyCall("/GrapeUser/roles/RoleDelete/" + _id)
 				.toString();
 		long code = (long) JSONHelper.string2json(info).get("errorcode");
 		return resultmessage(Integer.parseInt(String.valueOf(code)), "组织机构删除成功");
@@ -27,7 +27,7 @@ public class Ognization {
 
 	// 批量删除组织机构信息
 	public String OrganBatchDelete(String ids) {
-		String info = appsProxy.proxyCall(callhost(), appsProxy.appid() + "/16/roles/RoleBatchDelete/" + ids, null, "")
+		String info = appsProxy.proxyCall("/GrapeUser/roles/RoleBatchDelete/" + ids)
 				.toString();
 		long code = (long) JSONHelper.string2json(info).get("errorcode");
 		return resultmessage(Integer.parseInt(String.valueOf(code)), "组织机构批量删除成功");
@@ -35,8 +35,7 @@ public class Ognization {
 
 	// 分页
 	public String OrganPage(int ids, int pageSize) {
-		String info = appsProxy.proxyCall(callhost(),
-				appsProxy.appid() + "/16/roles/RolePage/int:" + ids + "/int:" + pageSize, null, "").toString();
+		String info = appsProxy.proxyCall("/GrapeUser/16/roles/RolePage/int:" + ids + "/int:" + pageSize).toString();
 		return info;
 	}
 
@@ -45,9 +44,7 @@ public class Ognization {
 		String info = null;
 		if (JSONHelper.string2json(json) != null) {
 			try {
-				info = appsProxy.proxyCall(callhost(),
-						appsProxy.appid() + "/16/roles/RolePageBy/int:" + ids + "/int:" + pageSize + "/s:" + json, null,
-						"").toString();
+				info = appsProxy.proxyCall("/GrapeUser/16/roles/RolePageBy/int:" + ids + "/int:" + pageSize + "/s:" + json).toString();
 			} catch (Exception e) {
 				nlogger.logout(e);
 				info = null;
@@ -61,8 +58,7 @@ public class Ognization {
 		int code = 99;
 		if (JSONHelper.string2json(info) != null) {
 			try {
-				String msg = appsProxy.proxyCall(callhost(),
-						appsProxy.appid() + "/16/roles/RoleUpdate/s:" + id + "/s:" + info, null, "").toString();
+				String msg = appsProxy.proxyCall("/GrapeUser/16/roles/RoleUpdate/s:" + id + "/s:" + info).toString();
 				long codes = (long) JSONHelper.string2json(msg).get("errorcode");
 				code = Integer.parseInt(String.valueOf(codes));
 			} catch (Exception e) {
@@ -77,8 +73,7 @@ public class Ognization {
 	public String OgSetFatherid(String id, String fatherid) {
 		int code = 99;
 		try {
-			String msg = appsProxy.proxyCall(callhost(),
-					appsProxy.appid() + "/16/roles/RoleSetFatherId/s:" + id + "/s:" + fatherid, null, "").toString();
+			String msg = appsProxy.proxyCall("/GrapeUser/roles/RoleSetFatherId/s:" + id + "/s:" + fatherid).toString();
 			long codes = (long) JSONHelper.string2json(msg).get("errorcode");
 			code = Integer.parseInt(String.valueOf(codes));
 		} catch (Exception e) {
@@ -86,22 +81,6 @@ public class Ognization {
 			code = 99;
 		}
 		return resultmessage(code, "上级组织机构设置成功");
-	}
-
-	private String callhost() {
-		return getAppIp("host").split("/")[0];
-	}
-
-	private String getAppIp(String key) {
-		String value = "";
-		try {
-			Properties pro = new Properties();
-			pro.load(new FileInputStream("URLConfig.properties"));
-			value = pro.getProperty(key);
-		} catch (Exception e) {
-			value = "";
-		}
-		return value;
 	}
 
 	private String resultmessage(int num, String message) {
